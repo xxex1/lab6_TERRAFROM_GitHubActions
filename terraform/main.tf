@@ -45,7 +45,7 @@ resource "aws_security_group" "web_app" {
 resource "aws_instance" "webapp_instance" {
   ami           = "ami-004e960cde33f9146"
   instance_type = "t3.micro"
-  security_groups = ["admin_group"]
+  vpc_security_group_ids = [aws_security_group.web_app.id]
 
   tags = {
     Name = "webapp_instance"
