@@ -43,17 +43,16 @@ resource "aws_security_group" "web_app" {
 }
 
 resource "aws_instance" "webapp_instance" {
-  ami           = "ami-0669b163befffbdfc"
+  ami           = "ami-004e960cde33f9146"
   instance_type = "t3.micro"
-  security_groups = ["web_app"]
+  security_groups = ["admin_group"]
 
   tags = {
     Name = "webapp_instance"
   }
 }
 
-# Output block - displays the public IP address after infrastructure deployment
-# This information is shown after successful 'terraform apply'
+
 output "instance_public_ip" {
   value       = aws_instance.webapp_instance.public_ip
   description = "Public IP address of the EC2 instance"
