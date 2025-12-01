@@ -88,7 +88,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -no-color -input=false
+      run: terraform plan -no-color -input=false -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
       working-directory: ./terraform
       continue-on-error: true
       env:
@@ -145,7 +145,7 @@ jobs:
       working-directory: ./terraform
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve -no-color
+      run: terraform apply -auto-approve -no-color -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
       working-directory: ./terraform
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_SHCHERBAN_KEY }}
@@ -161,10 +161,43 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_SHCHERBAN_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_SHCHERBAN_KEY }}
 
+    - name: Wait for EC2 to be ready
+      run: |
+        echo "Waiting for EC2 instance to be ready..."
+        sleep 60
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        ssh-keyscan -H ${{ steps.get-ip.outputs.instance_ip }} >> ~/.ssh/known_hosts
+
+    - name: Deploy Application Code
+      run: |
+        # Create deployment package
+        tar -czf app.tar.gz app.py templates/
+
+        # Copy to server
+        scp -i ~/.ssh/deploy_key app.tar.gz ec2-user@${{ steps.get-ip.outputs.instance_ip }}:/tmp/
+
+        # Extract and restart service
+        ssh -i ~/.ssh/deploy_key ec2-user@${{ steps.get-ip.outputs.instance_ip }} << 'ENDSSH'
+          cd /opt/webapp
+          tar -xzf /tmp/app.tar.gz
+          sudo systemctl daemon-reload
+          sudo systemctl enable webapp.service
+          sudo systemctl restart webapp.service
+          sudo systemctl status webapp.service
+        ENDSSH
+
     - name: Display Deployment Info
       run: |
         echo "### Deployment Successful! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**EC2 Instance IP:** ${{ steps.get-ip.outputs.instance_ip }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Application URL:** http://${{ steps.get-ip.outputs.instance_ip }}:5000" >> $GITHUB_STEP_SUMMARY
         echo "**Region:** eu-central-1" >> $GITHUB_STEP_SUMMARY
         echo "**Instance Type:** t3.micro" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Your Flask Pawnshop application is now running!" >> $GITHUB_STEP_SUMMARY
