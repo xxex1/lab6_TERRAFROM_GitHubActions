@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Ломбард</title>
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        table, th, td { border: 1px solid #444; border-collapse: collapse; padding: 5px; }
+        input { margin: 5px; }
+    </style>
+</head>
+<body>
+<h2>Список предметів</h2>
+
+<form action="/add" method="POST">
+    Назва: <input name="title" required>
+    Власник: <input name="owner" required>
+    Сума: <input name="loan_amount" required>
+    <button type="submit">Додати</button>
+</form>
+
+<table>
+    <tr><th>ID</th><th>Назва</th><th>Власник</th><th>Сума</th><th>Статус</th><th>Дії</th></tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.item_id }}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.owner }}</td>
+        <td>{{ item.loan_amount }}</td>
+        <td>
+            <form action="/update/{{ item.item_id }}" method="POST">
+                <select name="status">
+                    <option value="in_storage" {% if item.status == "in_storage" %}selected{% endif %}>На зберіганні</option>
+                    <option value="redeemed" {% if item.status == "redeemed" %}selected{% endif %}>Викуплено</option>
+                    <option value="sold" {% if item.status == "sold" %}selected{% endif %}>Продано</option>
+                </select>
+                <button type="submit">Змінити</button>
+            </form>
+        </td>
+        <td><a href="/delete/{{ item.item_id }}">Видалити</a></td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

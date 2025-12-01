@@ -1,0 +1,9 @@
+[
+    {
+        "item_id": 1,
+        "title": "1",
+        "owner": "1",
+        "loan_amount": 1.0,
+        "status": "in_storage"
+    }
+]
