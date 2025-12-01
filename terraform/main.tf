@@ -56,7 +56,7 @@ resource "aws_security_group" "web_app" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "webapp-deployer-key"
+  key_name   = "flask-pawnshop-deployer-v2"
   public_key = var.ssh_public_key
 }
 
