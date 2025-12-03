@@ -57,7 +57,7 @@ resource "aws_security_group" "web_app" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "flask-pawnshop-deployer-v2"
-  public_key = var.ssh_public_key
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCkd/Xl4NQT/eQkUdcUQKTQN30EE0N2OTYJQlGAsz6ftc85GrtCTkS4xbe7KoTqs1aii/3udZRxcEAJ2yumQkAh1UQKaDSMir5sFIjyn65C5BR7dKb7ArPXe8dbDCjp6z1uAuoBVae6/EK1YZWKJ9V3XQgOZrC4OlX64RLvxX13GuUpKY3CDCW8YdhzeuO/vWTV/8vhzIwBvP0eOQJwWEw5paf6xlpWGMWIk8clFlAhYHHe+85VAp2J6CCaD1gG3VXXh7Mdr2qU7GjjdaYOB9ZEYkjNJnOeb/mzOWM4OMSsP4/mBO1U2Hm1LRdn2S8cFGJpoKHcLo+BY6myNeppEA0BMUlJcZjOx7yPO0rXSdG9PbzVDge7fK+4b4/PrLkM/tMV1ugzxu5hVC2X7DkgmKAaoKefvP91WZiFOIDPSkLKQLDjzgzT61XpVVGmceTh/oRpwa03iZdbbJKPqdDLmN+9HqxbhkExQYZSLBQKoEmgwbrlkra34G/+Qbv5abm24QD/7t/9qPZ0wPAKutvafx14ujij02NbBirB6g1OkAfQLnY74A496aaLVqmKsewhkfJAGafq5o6mJkyQv2n9I7kpoAU2yFnHEtZX3thvxmr6yy2s7a6mH74+E7MSA+jgDj90yNiu+pquaytp2n3csTZfUQZ0xsUXkuZO0F1xtrY/Mw== dmytro@DESKTOP-GP0P663"
 }
 
 resource "aws_instance" "webapp_instance" {
