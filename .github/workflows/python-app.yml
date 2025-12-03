@@ -86,6 +86,12 @@ jobs:
       run: terraform validate -no-color
       working-directory: ./terraform
 
+    - name: Debug Public Key
+      run: |
+        echo "Public key length: ${#SSH_KEY}"
+      env:
+        SSH_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+      
     - name: Terraform Plan
       id: plan
       run: terraform plan -no-color -input=false -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
