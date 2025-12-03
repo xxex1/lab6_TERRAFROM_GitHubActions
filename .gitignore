@@ -1,2 +1,5 @@
 __pycache__
 /test-reports
+*.tfstate
+*.tfstate.*
+.terraform/
